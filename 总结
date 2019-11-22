@@ -1,0 +1,30 @@
+1、对原来的ssh01项目进行分层和聚合。
+2、分为domain\dao\service\web等子模块，父工程为ssh_maven1,
+   其中ssh_naven1做为父工程它的pom打包方式为pom，domain\dao\service的打包方式为jar
+   web的打包方式为war。
+3、将原来ssh01项目的各个包（dao\domain...)中的文件分别复制到对应的子模块中，spring,hibernate,struts等
+   配制文件放到了web模块中的resources中。
+4、分别建立domain\dao\service\web等子模块之间的依赖关系。
+   在dao的pom中加入对domain的依赖
+   在service的pom中加入对dao的依赖
+   在web的pom中加入对service的依赖
+5、reimport整个项目的依赖。
+6、可以分别在tomcat上和maven tomcat插件上运行项目，
+   在tomcat上运行：配制tomcat，然后发布web模块就行。
+   在maven tomcat插件上运行，需要将ssh01中的插件配制放到父pom中才行。
+7、拆分后的各个子模块就像还是在一个大的项目中一样，web可以import Comtomer类，因为
+   maven依赖管理的原因，也能找到。
+
+8、私服的配制。项目从私服中下载依赖，以及将本地项目打包上传到私服的寄主仓库。在父工程的pom中配制
+distributionManagement
+私服的相关配制和deploy相关配制可以参考  mybase笔记中的maven---nexus私服的搭建。
+涉及到的maven 命令为 mvn clean deploy(发布项目到私服的寄主仓库）
+
+可以单独deploy任一模块，也可以deploy整个项目，这就看是在哪个目录下运行deploy命令。
+一旦将相关模块deploy到私服中，本地源码中就可以删去相关源码，比如deploy domain后可以将
+domain模块删除掉，但是项目依然可以运行，因为私服上已经有了domain的jar包，其它模块由于
+maven依赖管理可以找到，这方便多人进行组合开发。
+
+
+<!-- 代表的是项目的version方便统一 -->
+<version>${project.version}</version>
